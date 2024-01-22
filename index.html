@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="header">
+    <section class="header_section">
+      <div class="header_text">
+        <h2>Weather Forecast</h2>
+      </div>
+    </section>
+  </header>
+
+  <main class="main">
+    <section class="wrapper_main">
+      <div class="container1">
+        <label for="cityInput">Enter City:</label>
+        <input type="text" id="cityInput" />
+        <button id="getWeatherButton">Get Weather</button>
+        <div id="weather-info"></div>
+      </div>
+      <div class="container2">
+
+      </div>
+      <div class="container3">
+        <div id="map" class="mapbox-container"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>Nurzhan Zhakiya</div>
+    <div> - SE-2206 </div>
+  </footer>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
