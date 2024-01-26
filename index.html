@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather and Map App</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-top: 20px;
+    }
+    form {
+      max-width: 400px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #urban-definitions li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Find your city and know about the weather</h1>
+  <form id="weatherForm" action="/weather" method="post">
+    <label for="city">Enter your City:</label>
+    <input type="text" id="city" name="city" required>
+    <button type="submit">Get Weather and Map</button>
+  </form>
+  <div id="currency-container" class="container">
+    <h2>Currency Converter</h2>
+    <form id="currencyForm" action="/currency" method="post">
+      <label for="amount">Enter Amount:</label>
+      <input type="number" id="amount" name="amount" required>
+      <label for="fromCurrency">From Currency:</label>
+      <input type="text" id="fromCurrency" name="fromCurrency" placeholder="e.g., USD" required>
+      <label for="toCurrency">To Currency:</label>
+      <input type="text" id="toCurrency" name="toCurrency" placeholder="e.g., EUR" required>
+      <button type="submit">Convert</button>
+    </form>
+    <div id="currencyResult"></div>
+  </div>
+  <div id="urban-container" class="container">
+    <h2>Urban Dictionary Definitions</h2>
+    <form id="urbanForm" action="/urban-dictionary" method="post">
+      <label for="term">Enter a term:</label>
+      <input type="text" id="term" name="term" required>
+      <button type="submit">Search Definitions</button>
+    </form>
+    <ul id="urban-definitions"></ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="app.js"></script>
+  <script src="currency.js"></script>
+  <script>
+    $(document).ready(() => {
+      $("#urbanForm").submit((event) => {
+        event.preventDefault();
+        const term = $("#term").val();
+        fetchUrbanDefinitions(term);
+      });
+
+      $("#currencyForm").submit((event) => {
+        event.preventDefault();
+        const amount = $("#amount").val();
+        const fromCurrency = $("#fromCurrency").val();
+        const toCurrency = $("#toCurrency").val();
+        convertCurrency(amount, fromCurrency, toCurrency);
+      });
+    });
+
+    function fetchUrbanDefinitions(term) {
+      $.post("/urban-dictionary", { term: term }, (data) => {
+        const definitions = data.definitions;
+        displayUrbanDefinitions(definitions);
+      });
+    }
+
+    function displayUrbanDefinitions(definitions) {
+      const listContainer = $("#urban-definitions");
+      listContainer.empty();
+
+      if (definitions && definitions.length > 0) {
+        definitions.forEach((definition) => {
+          listContainer.append(`<li>${definition.definition}</li>`);
+        });
+      } else {
+        listContainer.append("<li>No definitions found.</li>");
+      }
+    }
+
+    function convertCurrency(amount, fromCurrency, toCurrency) {
+  $.post("/currency", { amount, fromCurrency, toCurrency }, (data) => {
+    if (data.error) {
+      $("#currencyResult").html(`<p>Error: ${data.error}</p>`);
+    } else {
+      const result = data.result;
+      $("#currencyResult").html(`<p>${amount} ${fromCurrency} is approximately ${result} ${toCurrency}</p>`);
+    }
+  });
+}
+  </script>
+</body>
+</html>
